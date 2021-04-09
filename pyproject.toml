@@ -6,6 +6,9 @@ authors = ["Frank Zheng <northtree.au@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+kafka-python = "^2.0.2"
+psycopg2-binary = "^2.8.6"
+aiohttp = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
