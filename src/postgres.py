@@ -1,6 +1,5 @@
 import os
 
-from datetime import datetime
 from psycopg2 import connect, sql, errors
 
 from .model import URLStatus
