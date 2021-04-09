@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "website-monitor"
+version = "0.1.0"
+description = ""
+authors = ["Frank Zheng <northtree.au@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+yapf = "^0.30.0"
+pytest = "^4.4.0"
+pylint = "^2.6.0"
+taskipy = "^1.4.0"
+
+[tool.taskipy.tasks]
+lint = "pylint -r n src/ tests/"
+test = "pytest -s"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
