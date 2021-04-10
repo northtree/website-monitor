@@ -26,7 +26,8 @@ class Producer:
 
     def __del__(self):
         print('Deleting Kafka Producer...')
-        self.producer.close()
+        if self.producer:
+            self.producer.close()
 
     def produce(self, message: bytes):
         """Send message to given Kafka topic.
@@ -64,7 +65,8 @@ class Consumer:
 
     def __del__(self):
         print('Deleting Kafka Consumer...')
-        self.consumer.close()
+        if self.consumer:
+            self.consumer.close()
 
     def consume(self) -> Union[bytes, None]:
         """Consume one message from given Kafka topic.
