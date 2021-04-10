@@ -20,14 +20,16 @@ async def fetch(session: aiohttp.ClientSession, url: str, kafka_producer: Produc
         return url_status
 
 
-async def fetch_all(urls, loop):
+async def fetch_all(urls, loop, interval, count):
     async with aiohttp.ClientSession(loop=loop) as session:
-        tasks = []
         kafka_producer = Producer()
-        for url in urls:
-            tasks.append(fetch(session, url, kafka_producer))
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        return results
+        for i in range(count):
+            tasks = []
+            for url in urls:
+                tasks.append(fetch(session, url, kafka_producer))
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            print(results)
+            await asyncio.sleep(interval)
 
 @click.command()
 @click.option('--urls', '-l', default='urls.txt', help='URLs file to monitor')
