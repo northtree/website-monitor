@@ -18,4 +18,3 @@ class URLStatus:
     def to_msgpack(self):
         # TODO
         pass
-
