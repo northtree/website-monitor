@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Union
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaConnectionError, KafkaTimeoutError, KafkaError
@@ -11,6 +11,7 @@ class Producer:
     def __init__(self, server: str=None, topic: str=None):
         self.server = server or os.environ.get('KAFKA_URI')
         self.topic = topic or os.environ.get('KAFKA_TOPIC')
+        self.producer = None
 
         try:
             self.producer = KafkaProducer(
@@ -26,7 +27,8 @@ class Producer:
 
     def __del__(self):
         print('Deleting Kafka Producer...')
-        self.producer.close()
+        if self.producer:
+            self.producer.close()
 
     def produce(self, message: bytes):
         """Send message to given Kafka topic.
@@ -45,6 +47,7 @@ class Consumer:
     def __init__(self, server: str=None, topic: str=None):
         self.server = server or os.environ.get('KAFKA_URI')
         self.topic = topic or os.environ.get('KAFKA_TOPIC')
+        self.consumer = None
 
         try:
             self.consumer = KafkaConsumer(
@@ -64,9 +67,10 @@ class Consumer:
 
     def __del__(self):
         print('Deleting Kafka Consumer...')
-        self.consumer.close()
+        if self.consumer:
+            self.consumer.close()
 
-    def consume(self) -> bytes:
+    def consume(self) -> Union[bytes, None]:
         """Consume one message from given Kafka topic.
 
         Returns:
@@ -76,14 +80,15 @@ class Consumer:
             msg_pack = self.consumer.poll(timeout_ms=10000, max_records=1)
             # print(msg_pack)
             message = None
-            for tp, records in msg_pack.items():
+            for _, records in msg_pack.items():
                 if records is None:
-                    return
+                    return None
                 message = records[0].value
             self.consumer.commit()
             return message
         except KafkaError as e:
             print(f'Cannot poll message from Kafka topic: {e}')
+            return None
 
     def subscript(self):
         # TODO

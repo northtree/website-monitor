@@ -1,4 +1,3 @@
-import os
 import time
 from src.postgres import PGClient
 from src.model import URLStatus

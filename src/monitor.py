@@ -1,8 +1,7 @@
 import time
-
-import aiohttp
-import asyncio
 import ssl
+import asyncio
+import aiohttp
 
 from .model import URLStatus
 from .kafka import Producer
@@ -31,7 +30,7 @@ async def fetch_all(urls, loop):
 
 
 if __name__ == '__main__':
-    urls = [
+    url_list = [
         'https://httpbin.org/status/200',
         'https://httpbin.org/status/300',
         'https://httpbin.org/status/400',
@@ -41,6 +40,6 @@ if __name__ == '__main__':
         # 'https://httpbin.org/delay/10',
         'https://google.com',
     ]
-    loop = asyncio.get_event_loop()
-    res = loop.run_until_complete(fetch_all(urls, loop))
+    event_loop = asyncio.get_event_loop()
+    res = event_loop.run_until_complete(fetch_all(url_list, event_loop))
     print(res)

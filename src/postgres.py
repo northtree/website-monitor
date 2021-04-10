@@ -1,6 +1,6 @@
 import os
+from typing import Union
 
-from datetime import datetime
 from psycopg2 import connect, sql, errors
 
 from .model import URLStatus
@@ -29,16 +29,18 @@ class PGClient:
         self.conn.close()
         print('Cleanup DB Connection')
 
-    def current_database(self) -> str:
+    def current_database(self) -> Union[str, None]:
         try:
             self.cursor.execute('SELECT current_database()')
             result = self.cursor.fetchone()
             print(f'Successfully connected to: {result[0]}')
             if result:
                 return result[0]
+            return None
 
         except errors.DatabaseError as e:
             print(f'DB query error: {e}')
+            return None
 
     def _create_table(self):
         try:
@@ -73,6 +75,3 @@ class PGClient:
 
         except errors.DatabaseError as e:
             print(f'DB insert error: {e}')
-
-
-

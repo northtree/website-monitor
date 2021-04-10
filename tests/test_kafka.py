@@ -1,7 +1,11 @@
+import os
 import uuid
+import pytest
+
 from src.kafka import Producer, Consumer
 
-
+@pytest.mark.skipif(os.environ.get('GITHUB_ACTIONS') == 'true',
+    reason='skip on GitHub Actions for lack of KEY file')
 def test_kafka_message():
     """Verify message value between Producer and Consumer.
     """
