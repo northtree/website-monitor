@@ -22,14 +22,14 @@ async def fetch(session: aiohttp.ClientSession, url: str, kafka_producer: Produc
 
 async def fetch_all(urls, loop, interval, count):
     async with aiohttp.ClientSession(loop=loop) as session:
-        kafka_producer = Producer()
-        for _ in range(count):
-            tasks = []
-            for url in urls:
-                tasks.append(fetch(session, url, kafka_producer))
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-            print(results)
-            await asyncio.sleep(interval)
+        with Producer() as kafka_producer:
+            for _ in range(count):
+                tasks = []
+                for url in urls:
+                    tasks.append(fetch(session, url, kafka_producer))
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                print(results)
+                await asyncio.sleep(interval)
 
 @click.command()
 @click.option('--urls', '-l', default='urls.txt', help='URLs file to monitor')

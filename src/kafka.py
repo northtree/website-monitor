@@ -7,6 +7,7 @@ from kafka.errors import KafkaConnectionError, KafkaTimeoutError, KafkaError
 # Adapted from Aiven Kafka Tutorial
 # Credit: https://help.aiven.io/en/articles/489572-getting-started-with-aiven-for-apache-kafka
 
+
 class Producer:
     def __init__(self, server: str=None, topic: str=None):
         self.server = server or os.environ.get('KAFKA_URI')
@@ -25,8 +26,12 @@ class Producer:
             print(f'Error to connect Kafka: {e}')
             raise e
 
-    def __del__(self):
-        print('Deleting Kafka Producer...')
+    def __enter__(self):
+        print('Enter Kafka Producer')
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('Exit Kafka Producer')
         if self.producer:
             self.producer.close()
 
@@ -65,8 +70,12 @@ class Consumer:
             print(f'Error to connect Kafka: {e}')
             raise e
 
-    def __del__(self):
-        print('Deleting Kafka Consumer...')
+    def __enter__(self):
+        print('Enter Kafka Consumer')
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('Exit Kafka Consumer')
         if self.consumer:
             self.consumer.close()
 

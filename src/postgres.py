@@ -23,8 +23,12 @@ class PGClient:
             print(f'Cannot connect to PostgreSQL: {e}')
             raise e
 
-    def __del__(self):
-        print('Deleting PGClient')
+    def __enter__(self):
+        print('Enter PGClient')
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('Exit PGClient')
         # self.cursor.close()
         self.conn.close()
         print('Cleanup DB Connection')
