@@ -30,5 +30,24 @@ jobs:
         run: poetry install --no-interaction --no-root
       - name: Lint python
         run: poetry run task lint
+      - name: Load Kafka key into files
+        run: |
+          echo '$KAFKA_SERVICE_KEY' > kafka_service.key
+          echo '$KAFKA_SERVICE_CERT' > kafka_service.cert
+          echo '$KAFKA_CA_PEM' > kafka_ca.pem
+        env:
+          KAFKA_SERVICE_KEY: ${{ secrets.KAFKA_SERVICE_KEY }}
+          KAFKA_SERVICE_CERT: ${{ secrets.KAFKA_SERVICE_CERT }}
+          KAFKA_CA_PEM: ${{ secrets.KAFKA_CA_PEM }}
       - name: Test with pytest
         run: poetry run task test
+        env:
+          KAFKA_URI: ${{ secrets.KAFKA_URI }}
+          KAFKA_TOPIC: ${{ secrets.KAFKA_TOPIC }}
+          KAFKA_SSL_KEYFILE: kafka_service.key
+          KAFKA_SSL_CERTFILE: kafka_service.cert
+          KAFKA_SSL_CAFILE: kafka_ca.pem
+          PG_URI: ${{ secrets.PG_URI }}
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_TABLE: ${{ secrets.PG_TABLE }}
+
