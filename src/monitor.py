@@ -1,8 +1,7 @@
 import time
-
-import aiohttp
-import asyncio
 import ssl
+import asyncio
+import aiohttp
 
 from .model import URLStatus
 from .kafka import Producer
