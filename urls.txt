@@ -1,0 +1,7 @@
+https://httpbin.org/status/200
+https://httpbin.org/status/300
+https://httpbin.org/status/400
+https://httpbin.org/status/500
+https://httpbin.org/delay/1
+https://httpbin.org/delay/2
+https://google.com
