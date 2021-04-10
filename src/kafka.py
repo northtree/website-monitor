@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Union
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaConnectionError, KafkaTimeoutError, KafkaError
@@ -66,7 +66,7 @@ class Consumer:
         print('Deleting Kafka Consumer...')
         self.consumer.close()
 
-    def consume(self) -> bytes:
+    def consume(self) -> Union[bytes, None]:
         """Consume one message from given Kafka topic.
 
         Returns:
@@ -76,14 +76,15 @@ class Consumer:
             msg_pack = self.consumer.poll(timeout_ms=10000, max_records=1)
             # print(msg_pack)
             message = None
-            for tp, records in msg_pack.items():
+            for _, records in msg_pack.items():
                 if records is None:
-                    return
+                    return None
                 message = records[0].value
             self.consumer.commit()
             return message
         except KafkaError as e:
             print(f'Cannot poll message from Kafka topic: {e}')
+            return None
 
     def subscript(self):
         # TODO
