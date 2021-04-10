@@ -2,6 +2,7 @@ import time
 import ssl
 import asyncio
 import aiohttp
+import click
 
 from .model import URLStatus
 from .kafka import Producer
@@ -19,27 +20,27 @@ async def fetch(session: aiohttp.ClientSession, url: str, kafka_producer: Produc
         return url_status
 
 
-async def fetch_all(urls, loop):
+async def fetch_all(urls, loop, interval, count):
     async with aiohttp.ClientSession(loop=loop) as session:
-        tasks = []
         kafka_producer = Producer()
-        for url in urls:
-            tasks.append(fetch(session, url, kafka_producer))
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        return results
+        for _ in range(count):
+            tasks = []
+            for url in urls:
+                tasks.append(fetch(session, url, kafka_producer))
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            print(results)
+            await asyncio.sleep(interval)
 
+@click.command()
+@click.option('--urls', '-l', default='urls.txt', help='URLs file to monitor')
+@click.option('--interval', '-i', default=2, help='Periodic interval in seconds')
+@click.option('--count', '-c', default=5, help='Periodic counts in this run')
+def main(urls, interval, count):
+    with open(urls, 'r') as url_file:
+        url_list = url_file.read().splitlines()
+        event_loop = asyncio.get_event_loop()
+        event_loop.run_until_complete(
+            fetch_all(url_list, event_loop, interval, count))
 
 if __name__ == '__main__':
-    url_list = [
-        'https://httpbin.org/status/200',
-        'https://httpbin.org/status/300',
-        'https://httpbin.org/status/400',
-        'https://httpbin.org/status/500',
-        'https://httpbin.org/delay/1',
-        'https://httpbin.org/delay/2',
-        # 'https://httpbin.org/delay/10',
-        'https://google.com',
-    ]
-    event_loop = asyncio.get_event_loop()
-    res = event_loop.run_until_complete(fetch_all(url_list, event_loop))
-    print(res)
+    main()  # pylint: disable=no-value-for-parameter
