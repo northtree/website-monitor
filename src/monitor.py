@@ -23,7 +23,7 @@ async def fetch(session: aiohttp.ClientSession, url: str, kafka_producer: Produc
 async def fetch_all(urls, loop, interval, count):
     async with aiohttp.ClientSession(loop=loop) as session:
         kafka_producer = Producer()
-        for i in range(count):
+        for _ in range(count):
             tasks = []
             for url in urls:
                 tasks.append(fetch(session, url, kafka_producer))
