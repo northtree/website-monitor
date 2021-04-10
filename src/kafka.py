@@ -11,6 +11,7 @@ class Producer:
     def __init__(self, server: str=None, topic: str=None):
         self.server = server or os.environ.get('KAFKA_URI')
         self.topic = topic or os.environ.get('KAFKA_TOPIC')
+        self.producer = None
 
         try:
             self.producer = KafkaProducer(
@@ -46,6 +47,7 @@ class Consumer:
     def __init__(self, server: str=None, topic: str=None):
         self.server = server or os.environ.get('KAFKA_URI')
         self.topic = topic or os.environ.get('KAFKA_TOPIC')
+        self.consumer = None
 
         try:
             self.consumer = KafkaConsumer(
